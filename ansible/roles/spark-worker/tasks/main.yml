@@ -1,0 +1,19 @@
+- name: Download Spark
+  get_url:
+    url: https://downloads.apache.org/spark/spark-3.5.1/spark-3.5.1-bin-hadoop3.tgz
+    dest: /opt/spark.tgz
+
+- name: Extract Spark
+  unarchive:
+    src: /opt/spark.tgz
+    dest: /opt/
+    remote_src: yes
+
+- name: Create symlink
+  file:
+    src: /opt/spark-3.5.1-bin-hadoop3
+    dest: /opt/spark
+    state: link
+
+- name: Start Spark Worker
+  shell: /opt/spark/sbin/start-worker.sh spark://{{ hostvars[groups['spark-master'][0]].ansible_host }}:7077

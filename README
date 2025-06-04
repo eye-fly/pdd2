@@ -1,0 +1,10 @@
+terraform init
+
+#start vms
+terraform apply
+
+# rm all vms
+terraform destroy
+
+
+ansible-playbook -i ansible/inventory.ini ansible/playbook.yml

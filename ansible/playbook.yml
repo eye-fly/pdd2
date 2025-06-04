@@ -1,0 +1,29 @@
+- hosts: all
+  become: true
+  roles:
+    - base
+
+- hosts: spark-master:spark-workers
+  become: true
+  roles:
+    - spark-common
+
+- hosts: zookeeper
+  become: true
+  roles:
+    - zookeeper
+
+- hosts: kafka
+  become: true
+  roles:
+    - kafka
+
+- hosts: spark-master
+  become: true
+  roles:
+    - spark-master
+
+- hosts: spark-workers
+  become: true
+  roles:
+    - spark-worker

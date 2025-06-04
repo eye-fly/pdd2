@@ -1,0 +1,9 @@
+install terraform, ansible, gcloud
+
+authenticate wit gcloud
+
+setup terraform for automatic ssh.pub key transfer and external ip retrival
+
+initilize all workers with java
+
+and thouse for spark with 

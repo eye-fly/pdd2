@@ -1,0 +1,5 @@
+- name: Create user spark
+  user:
+    name: spark
+    shell: /bin/bash
+    create_home: yes
