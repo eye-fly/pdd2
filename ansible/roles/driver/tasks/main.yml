@@ -70,9 +70,10 @@
 
 - name: Start Jupyter Notebook (nohup)
   shell: |
-    nohup jupyter notebook --ip=0.0.0.0 --port=8888 --notebook-dir=/home/{{ ansible_user }}/notebooks --no-browser --NotebookApp.token='' &
+    nohup jupyter notebook --ip=0.0.0.0 --port=8888 --notebook-dir=/home/{{ ansible_user }}/notebooks --no-browser --NotebookApp.token='' --allow-root > /home/{{ ansible_user }}/jupyter.log 2>&1 &
   args:
     creates: /tmp/jupyter_started
+    executable: /bin/bash
   register: jupyter_start
 
 - name: Touch file to prevent rerun

@@ -3,6 +3,11 @@
   roles:
     - base
 
+- hosts: nfs
+  become: true
+  roles:
+    - nfs
+
 - hosts: driver:spark_master:spark_workers
   become: true
   roles:

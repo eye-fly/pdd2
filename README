@@ -15,6 +15,7 @@ ssh -i .ssh/id_ed25519 debian@34.118.105.77
 
 jupyter notebook --ip=0.0.0.0 --port=8888 --notebook-dir=~/notebooks --no-browser --NotebookApp.token=''
 
+sudo ss -tulnp | grep :8888
 
 cd /opt/kafka/bin
 ./kafka-topics.sh --describe --bootstrap-server 34.118.16.181:9092
