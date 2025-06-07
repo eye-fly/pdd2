@@ -3,3 +3,20 @@
     name: spark
     shell: /bin/bash
     create_home: yes
+
+- name: Download Spark
+  get_url:
+    url: https://dlcdn.apache.org/spark/spark-3.5.6/spark-3.5.6-bin-hadoop3.tgz
+    dest: /opt/spark.tgz
+
+- name: Extract Spark
+  unarchive:
+    src: /opt/spark.tgz
+    dest: /opt/
+    remote_src: yes
+
+- name: Create symlink
+  file:
+    src: /opt/spark-3.5.6-bin-hadoop3
+    dest: /opt/spark
+    state: link

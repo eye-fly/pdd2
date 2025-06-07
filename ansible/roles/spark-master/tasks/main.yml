@@ -1,0 +1,5 @@
+- name: Start Spark Master
+  shell: /opt/spark/sbin/start-master.sh
+  args:
+    creates: /tmp/spark-master.pid
+

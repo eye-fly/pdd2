@@ -3,10 +3,15 @@
   roles:
     - base
 
-- hosts: spark-master:spark-workers
+- hosts: driver:spark_master:spark_workers
   become: true
   roles:
     - spark-common
+
+- hosts: driver
+  become: true
+  roles:
+    - driver
 
 - hosts: zookeeper
   become: true
@@ -18,12 +23,13 @@
   roles:
     - kafka
 
-- hosts: spark-master
+- hosts: spark_master
   become: true
   roles:
     - spark-master
 
-- hosts: spark-workers
+- hosts: spark_workers
   become: true
   roles:
     - spark-worker
+

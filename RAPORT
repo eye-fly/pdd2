@@ -7,3 +7,17 @@ setup terraform for automatic ssh.pub key transfer and external ip retrival
 initilize all workers with java
 
 and thouse for spark with 
+
+
+
+{can 
+- hosts: driver
+  become: true
+  roles:
+    - driver
+
+- hosts: spark_master:spark_workers:zookeeper:kafka
+  become: true
+  roles:
+    - base
+ be run cocurrently?}

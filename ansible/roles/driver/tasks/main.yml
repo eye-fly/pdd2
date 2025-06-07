@@ -1,0 +1,81 @@
+- name: Export Kafka broker IPs
+  lineinfile:
+    path: /home/{{ ansible_user }}/.bashrc
+    line: 'export KAFKA_BROKERS={{ groups["kafka"] | map("extract", hostvars, "ansible_host") | join(",") }}:9092'
+    create: yes
+
+- name: Export Spark master URL
+  lineinfile:
+    path: /home/{{ ansible_user }}/.bashrc
+    line: 'export SPARK_MASTER_URL=spark://{{ hostvars[groups["spark_master"][0]].ansible_host }}:7077'
+    create: yes
+
+- name: Install Python, pip
+  apt:
+    name:
+      - python3
+      - python3-pip
+      - python3-venv
+    state: present
+    update_cache: yes
+
+- name: Install Jupyter Notebook via pip
+  pip:
+    name: notebook
+    executable: pip3
+
+- name: Install Kafka clients
+  pip:
+    name:
+      - kafka-python
+    executable: pip3
+
+- name: Install pip dep
+  pip:
+    name:
+      - pyspark==3.5.6
+      - pandas
+      - python-dotenv
+      - pyarrow
+      - bash_kernel
+    executable: pip3
+
+- name: Copy taxi records
+  ansible.builtin.copy:
+    src: /home/pzero/python/pdd/zad2/files/
+    dest: /home/{{ ansible_user }}/taxi_files/
+    owner: "{{ ansible_user }}"
+    mode: '0755'
+
+- name: Copy scripts
+  ansible.builtin.copy:
+    src: /home/pzero/python/pdd/zad2/driver_scripts/
+    dest: /home/{{ ansible_user }}/scripts/
+    owner: "{{ ansible_user }}"
+    mode: '0755'
+
+- name: Create notebook directory
+  file:
+    path: /home/{{ ansible_user }}/notebooks
+    state: directory
+    owner: "{{ ansible_user }}"
+    mode: '0755'
+
+- name: Copy Notebooks
+  ansible.builtin.copy:
+    src: /home/pzero/python/pdd/zad2/notebooks/
+    dest: /home/{{ ansible_user }}/notebooks/
+    owner: "{{ ansible_user }}"
+    mode: '0755'
+
+- name: Start Jupyter Notebook (nohup)
+  shell: |
+    nohup jupyter notebook --ip=0.0.0.0 --port=8888 --notebook-dir=/home/{{ ansible_user }}/notebooks --no-browser --NotebookApp.token='' &
+  args:
+    creates: /tmp/jupyter_started
+  register: jupyter_start
+
+- name: Touch file to prevent rerun
+  file:
+    path: /tmp/jupyter_started
+    state: touch

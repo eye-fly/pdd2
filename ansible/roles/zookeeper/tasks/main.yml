@@ -1,0 +1,56 @@
+- name: Download Zookeeper
+  get_url:
+    url: https://downloads.apache.org/zookeeper/zookeeper-3.8.4/apache-zookeeper-3.8.4-bin.tar.gz
+    dest: /opt/zookeeper.tar.gz
+
+- name: Extract Zookeeper
+  unarchive:
+    src: /opt/zookeeper.tar.gz
+    dest: /opt/
+    remote_src: yes
+
+- name: Create symlink to Zookeeper
+  file:
+    src: /opt/apache-zookeeper-3.8.4-bin
+    dest: /opt/zookeeper
+    state: link
+
+- name: Create Zookeeper data directory
+  file:
+    path: /opt/zookeeper/data
+    state: directory
+
+- name: Configure Zookeeper
+  copy:
+    dest: /opt/zookeeper/conf/zoo.cfg
+    content: |
+      tickTime=2000
+      dataDir=/opt/zookeeper/data
+      clientPort=2181
+      maxClientCnxns=60
+
+- name: Create systemd service
+  copy:
+    dest: /etc/systemd/system/zookeeper.service
+    content: |
+      [Unit]
+      Description=Apache Zookeeper Server
+      After=network.target
+
+      [Service]
+      Type=simple
+      ExecStart=/opt/zookeeper/bin/zkServer.sh start-foreground
+      Restart=on-failure
+
+      [Install]
+      WantedBy=multi-user.target
+
+- name: Reload systemd daemon
+  systemd:
+    daemon_reload: yes
+
+- name: Start Zookeeper
+  systemd:
+    name: zookeeper
+    enabled: yes
+    state: started
